@@ -50,7 +50,7 @@ So the importance of the Markov property in reinforcement learning is that the d
 
 But now that we have understand what is a Markov chain let's see an example of a Markov chain. 
 
-![markov-aids]({{ site.url }}/assets/img/marov_aids.png)
+![markov-aids]({{ site.github.url }}/assets/img/marov_aids.png)
 
 The matrix above gives the probabilities of moving from 1 health state to another in 1 year.
 The transition probability matrix of the above Markov chain is:
@@ -149,7 +149,7 @@ becuase intuentivetly the robot will get more can if it seach in the enviroment 
 
 That's the resulting MDP:
 
-![robot-mdp]({{ site.url }}/assets/img/clean-robot-mdp.png)
+![robot-mdp]({{ site.github.url }}/assets/img/clean-robot-mdp.png)
 
 ## Policy 
 
@@ -206,7 +206,7 @@ $$
 
 The previous equation is called **Bellman Expectation Equation** for \\\( v_\pi \\\), and it states that the value of the start state, following policy \\\( \pi \\\), must equal the discounted value of the expected next state, plus the reward exepected along the way. Think of looking ahead from one state to its possible successor states. 
 
-![]({{ site.url }}/assets/img/bellman-value-function.png)
+![]({{ site.github.url }}/assets/img/bellman-value-function.png)
 
 Similarly the **Bellman Expectation Equation** is define \\\( q_\pi \\\) as follow:
 
@@ -219,14 +219,14 @@ q_\pi (s, a)
 \end{aligned}
 $$
 
-![]({{ site.url }}/assets/img/bellman-action-state-fun.png)
+![]({{ site.github.url }}/assets/img/bellman-action-state-fun.png)
 
 For example, let's consider a simple grid world to illustrate the value function for out MDP. The cells of the grid correspond to the states of the environment. Actions that would take the agent off the grid leave its location unchanged, but also result in a reward of −1. Other actions result in a reward of 0, except those that move the agent out of the special states A and B. From state \\\( A \\\), all four actions yield a reward of
 +10 and take the agent to \\\( A' \\\). From state \\\( B \\\), all actions yield a reward of +5 and take the agent to \\\( B' \\\).
 
 Suppose the agent selects all four actions with equal probability in all state. Using the Bellman Expectation equation, with \\\( \gamma = 0.9 \\\), for the value function we obtain the right grid shown below.
 
-![]({{site.url}}/assets/img/grid-world.png)
+![]({{site.github.url}}/assets/img/grid-world.png)
 
 As you can notice near the lower edge we have negative values; this because there is an high probability of hitting the edge of the grid a get a reward of -1. While the highest value function is on the State \\\( B \\\), because the agent from \\\( B \\\) is taken to \\\( B' \\\), which give us a reward of +5, and unlike \\\( A' \\\) is not located on the edge of the grid, so  it's impossible that he'll get negative rewards.
 
@@ -287,7 +287,7 @@ $$
 Let's consider again the grid world introduced before, and let's suppose that we've solved the Bellman equation for \\\( v_* \\\). Solving the Bellman optimality equation provides one route to finding an optimal policy, and thus to solving the reinforcement learning problem.
 Here's what the \\\( v_* \\\) and \\\( \pi_* \\\) are like:
 
-![]({{site.url}}/assets/img/solved-grid-world.png)
+![]({{site.github.url}}/assets/img/solved-grid-world.png)
 
 
 # References

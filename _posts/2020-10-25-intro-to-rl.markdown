@@ -56,7 +56,7 @@ Mathematically we can describe a policy as follow:
 
 A **reward signal** defines the goal of a reinforcement learning problem. On each time step, the environment sends to the agent a reward, which in most cases is a number ( an integer or a floating-point number). The agent’s goal is to maximize the total reward it receives over the long run. So the reward tells the agent what are the good and the bad events. In a biological system, we might think of rewards as analogous to the experience of immediate pleasure and pain. The reward sent to the agent at any time depends on the agent’s current action and the current state of the agent’s environment. 
 Obviously, the reward signal is the main signal that is being watched for altering the policy. If an action selected by the policy is followed by a low reward, then the policy may be changed to select an action that will get a higher reward in the future.
-![rl-basics]({{ site.url }}/assets/img/rl-basics.png)
+![rl-basics]({{ site.github.url }}/assets/img/rl-basics.png)
 
 Whereas the reward signal indicates what is good in an immediate sense, a **value function** specifies what is good in the long run. Roughly speaking, the value of a state is the total amount of reward an agent can expect to accumulate over the future, starting from that state. Whereas rewards determine the immediate, intrinsic desirability of the environmental states, values indicate the long-term desirability of states after taking into account the states that are likely to follow, and the rewards available in those states. 
 
@@ -103,7 +103,7 @@ After having introduced the building block of an RL system, let's see what types
 
 By combining these things together we obtain the agent **taxonomy**: 
 
-![Rl-agent-taxonomy]({{ site.url }}/assets/img/Rl-agent-taxonomy.png)
+![Rl-agent-taxonomy]({{ site.github.url }}/assets/img/Rl-agent-taxonomy.png)
 
 # Probelms within Reinforcement Learning
 
@@ -123,7 +123,7 @@ For example, let's say that we are building an agent that is trying to learn the
 
 Reinforcement Learning             |  Planning
 :-------------------------:|:-------------------------:
-![]({{ site.url }}/assets/img/RL-Atari.png)  |  ![]({{ site.url }}/assets/img/Planning-Atari.png)
+![]({{ site.github.url }}/assets/img/RL-Atari.png)  |  ![]({{ site.github.url }}/assets/img/Planning-Atari.png)
 In the Reinforcement Learning setting the agent doesn't know the rules of the game, so the only thing that he can do is figuring out, through trial and error, the rules are and how the game works.  | In the planning problem, we have complete knowledge of how the emulator works, what are the rules of the game. So by having this information, we can do a lookahead search, a tree search, or any other planning method to find the optimal policy.
 
 

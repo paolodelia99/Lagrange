@@ -8,14 +8,14 @@ author: "Paolo"
 image: "Python_logo.png"
 ---
 
-In the [previous post]({{ site.url }}/_posts/2020-10-11-how-python-works-under-the-hood-pt1.markdown), I've given you an overview of what the compilation process is like in Python. Now that we have the compiled bytecode let's see what happens when the **Python Virtual Machine**, the interpreter, runs that code.
+In the [previous post]({{ site.github.url }}/_posts/2020-10-11-how-python-works-under-the-hood-pt1.markdown), I've given you an overview of what the compilation process is like in Python. Now that we have the compiled bytecode let's see what happens when the **Python Virtual Machine**, the interpreter, runs that code.
 
 Some programming languages (e.g., C++) are translated into instructions that run directly on hardware. We speak of compiling programs in that language onto
 a specific hardware architecture. Other programming languages (e.g., Java and Python) are translated to run on a common architecture: interpreters (or
 virtual machines) for that architecture can be written in a low-level language (like C, which targets most architectures) or in the machine's hardware language
 itself for maximal speed, so that exactly the same translated programs can run on any architecture that has the virtual machine program implemented on it.
 
-![comp-vs-int]({{ site.url }}/assets/img/comp-vs-int.png)
+![comp-vs-int]({{ site.github.url }}/assets/img/comp-vs-int.png)
 
 This makes the interpreted languages more portable than the compiled one because to produce a good compiler for a new architecture, and compiling a program can take a long time. But this comes with a cost, the interpreted represent an extra layer of software that reduces the language performance, so the interpreted languages are 2-10 times slower than the compiled one. So there isn't the right way to write a language translator: each approach comes with its own advantages and disadvantages, and each can be used/abused in situations.
 
