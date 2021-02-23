@@ -32,7 +32,7 @@ When you first execute a Python script the **compiler** is involved in activitie
 
 Here's an Grapical overview of the process of initialization and compilation: 
 
-![PythonProcess](/assets/img/birdsEyeView.png)
+![PythonProcess]({{ site.github.url }}/assets/img/birdsEyeView.png)
 
 ## Compilation of the Python Code
 
@@ -163,7 +163,7 @@ while b != 0:
 return a
 ```
 
-![AST](/assets/img/AST.png)
+![AST]({{ site.github.url }}/assets/img/AST.png)
 
 The `ast` module provided by Python can help us to see 
 hoe AST are built in the CPython implementation:
@@ -212,7 +212,7 @@ The minimum information contained in a symbol table used by a translator include
 
 For those who are visual learners a symbol table is something like this:
 
-![Symbol-table](/assets/img/symbol-table.png)
+![Symbol-table]({{ site.github.url }}/assets/img/symbol-table.png)
 
 In the case of Python each symbol of the symbol table has the following attributes: 
 
@@ -324,7 +324,7 @@ def fib(n):
     return l
 ```
 
-![CFG-fibo](/assets/img/CFG-fibo.png)
+![CFG-fibo]({{ site.github.url }}/assets/img/CFG-fibo.png)
 
 - In the second step, the algorithm flattens the control flow graph using a post-order depth-first search transversal. The bytecode instructions are then used to create a code object.
 
