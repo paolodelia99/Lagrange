@@ -87,7 +87,7 @@ For more info about the Vyper language, you can check out the [docs](https://vyp
 ## Writing the token contract
 
 In order to make all the ERC20 token re-used by other application a [standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) has been defined by Fabian Vogelsteller and Vitalik Buterin. 
-Since I want to make a proper token, of course, I've decided to adhere to these standards.
+Since I want to make a proper token, I've decided to adhere to these standards.
 
 The good thing is that Vyper has a [build-in ERC20 token interface](https://github.com/vyperlang/vyper/blob/master/vyper/interfaces/ERC20.py)! Let's first import it:
 
@@ -165,4 +165,163 @@ def mint(_account: address, _value: uint256) -> bool:
 	return True    
 ```
 
-To make the contract even more standard we need to add a few state variable which are: the `name`, the `symbol` and the `Approval` event.
+To make the contract even more standard we need to add a few state variable which are: the `name`, the `symbol`, `allowances` and the `Approval` event.
+`name` and `symbol` are autoesplicative variables, instead I would like to focus on the `allowances` state variable. The `allowances` is a `HasMap[address, HasMap[address, uint256]]` and stores the amount the `spender` is allowed to withdraw from `owner`.
+
+ For give an example, let's say that `Bob` has as address `0x53FB636Da5708A3Ec1D6544F543F8856577F315C` and `Alice` `0x12fE305d63E655317fa7E708aD93C83Bf26EcC47`. Suppose now, to have the following the situation: 
+
+ holder address | allowance address | allowance 
+ 0x53FB...F315C | 0x12fE...EcC47 | 25
+
+what the hash table is telling us is that Bob has allowed Alice to transfer up to 25 tokens from Bob's account. 
+
+To change the allowance we use the function `approve(_spender: address, _value: uint256) -> bool`. `approve` allows `_spender` to withdraw from your account (`msg.sender`, or who else has call the contract) multiple times, up to the `_value` amount. If the function call was success and `Approval` event is log.
+
+To initialize some of the state variables when the contract is deployed we have to define, like in Python, the `__init__` function.
+
+Here's how I've implemented the `__init__` function:
+
+
+```python
+@external 
+def __init__(founder: address):
+	self.totalSupply = INIT_SUPPLY
+	self.name = "Paolown Coin"
+	self.symbol = "PLW"
+	self.founder = founder
+	self.balances[self.founder] = self.totalSupply
+```
+
+I've also added a `founder` state variable which is the address of the founder/owner of the contract who initially holds all the coins. 
+
+Now we only missing the functions that can allow the token transfer between the users. In the ERC20 standards are: `transfer(_to: address, _value: uint256) -> bool` and `transferFrom(_from: address, _to: address, _value: uint256) -> bool`. 
+
+`transfer` transfers `_value` amount of tokens to address `_to`, and fire the `Transfer` event.
+Whereas, `transferFrom` transfers `_value` amount of tokens from address `_from` to address `_to`, but different from `transfer` is used for a withdraw workflow, allowing contracts to transfer tokens on your behalf.
+
+By putting all the pieces together we got the following contract:
+
+```python
+# @version >=0.2.11 <0.3.0
+
+from vyper.interfaces import ERC20
+
+implements: ERC20
+
+MAX_SUPPLY: constant(uint256) = 1000000
+INIT_SUPPLY: constant(uint256) = 100000
+
+founder: address
+
+totalSupply: public(uint256)
+name: public(String[32])
+symbol: public(String[5])
+balances: HashMap[address, uint256]
+allowances: HashMap[address, HashMap[address, uint256]]
+
+event Transfer:
+	sender: indexed(address)
+	receiver: indexed(address)
+	amount: uint256
+
+event Approval:
+	owner: indexed(address)
+	spender: indexed(address)
+	value: uint256
+
+@external
+def __init__(founder: address):
+	self.totalSupply = INIT_SUPPLY
+	self.name = "Paolown Coin"
+	self.symbol = "PLW"
+	self.founder = founder
+	self.balances[self.founder] = self.totalSupply
+
+@view
+@external
+def get_max_supply() -> uint256:
+	return MAX_SUPPLY
+
+@internal
+def _transferCoins(_src: address, _dst: address, _amount: uint256):
+	assert _src != empty(address), "PLW::_transferCoins: cannot transfer from the zero address"
+	assert _dst != empty(address), "PLW::_transfersCoins: cannot transfer to the zero address"
+
+	self.balances[_src] -= _amount
+	self.balances[_dst] += _amount
+
+@external
+def transfer(_to: address, _value: uint256) -> bool:
+	assert self.balances[msg.sender] >= _value, "PLW::transfer: Not enough coins"
+
+	self._transferCoins(msg.sender, _to, _value)
+
+	log Transfer(msg.sender, _to, _value)
+	return True
+
+@external
+def transferFrom(_from: address, _to: address, _value: uint256) -> bool:
+	allowance: uint256 = self.allowances[_from][msg.sender]
+	assert self.balances[_from] >= _value and allowance >= _value
+
+	self._transferCoins(_from, _to, _value)
+
+	self.allowances[_from][msg.sender] -= _value
+	log Transfer(_from, _to, _value)
+	return True
+
+@view
+@external
+def balanceOf(_owner: address) -> uint256:
+	return self.balances[_owner]
+
+@view
+@external
+def allowance(_owner: address, _spender: address) -> uint256:
+	return self.allowances[_owner][_spender]
+
+@external 
+def approve(_spender: address, _value: uint256) -> bool:
+	self.allowances[msg.sender][_spender] = _value
+	log Approval(msg.sender, _spender, _value)
+	return True
+
+@external
+def increaseAllowance(spender: address, _value: uint256) -> bool:
+    assert spender != empty(address)
+
+    self.allowances[msg.sender][spender] += _value
+    log Approval(msg.sender, spender, self.allowances[msg.sender][spender])
+    return True
+
+@external
+def decreaseAllowance(spender: address, _value: uint256) -> bool:
+    assert spender != empty(address)
+
+    self.allowances[msg.sender][spender] -= _value
+    log Approval(msg.sender, spender, self.allowances[msg.sender][spender])
+    return True
+
+@external
+def mint(_account: address, _value: uint256) -> bool:
+	
+	if self.totalSupply + _value <= MAX_SUPPLY:
+		self.totalSupply += _value
+		self.balances[_account] += _value
+
+	log Transfer(empty(address), _account, _value)
+	return True
+```
+
+For more info you can check out the [repo](https://github.com/paolodelia99/paolown-coin).
+
+# Further Improvements
+
+- for the sake of simplicity I didn't made my token divisible, but you can make them divisible by adding the state variable `decimals: uint256` which stores how decimal values are you using. Of course, in order to make it work properly you have to multiply the whole number of token by $10^{decimals}$
+- together with the method of `mint` the token you can add a function that can `burn` token reducing the total supply, making them more scarce.
+
+# References
+
+- [ERC20 Token Standard](https://eips.ethereum.org/EIPS/eip-20)
+- [Understanding ERC-20 token contracts](https://www.wealdtech.com/articles/understanding-erc20-token-contracts/)
+- [Vyper docs](https://vyper.readthedocs.io/en/latest/index.html)
