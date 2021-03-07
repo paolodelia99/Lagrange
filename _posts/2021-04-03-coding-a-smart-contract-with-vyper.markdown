@@ -56,7 +56,7 @@ The first line of the file represents the allowed versions of the contract, the 
 
 `total_paid` is a state variable that is permanently stored in the contract storage. They are declared outside of the body of any functions, and initially contain the default value for their type. State variables are accessible in function via the `self`-object.
 
-Here functions have the same exact Python syntax, and they are executable units of code within contracts. Functions may be called internally (using the `@internal` annotation) or externally (using the `@external` annotation) depending on their visibility. 
+Here functions have the same Python syntax, and they are executable units of code within contracts. Functions may be called internally (using the `@internal` annotation) or externally (using the `@external` annotation) depending on their visibility. 
 
 For defining your own data types in Vyper there aren't classes but just like in the C programming language you can use Structs. 
 Here's how we can define a `Transaction` with a `struct`:  
@@ -133,7 +133,7 @@ def mint(_account: address, _value: uint256) -> bool:
 
 The `mint` function is pretty straightforward to understand. Notice that I've added the state variable `balcances` which is and `HashMap[address, uint256]` that contains all the balances of all the possible addresses, and the `Transfer` event which is an event that is log every time that a transaction has been made.
 
-Now whole contract look like:
+Now the whole contract looks like this:
 
 ```python
 # @version >=0.2.11 <0.3.0
@@ -317,7 +317,7 @@ For more info you can check out the [repo](https://github.com/paolodelia99/paolo
 
 # Further Improvements
 
-- for the sake of simplicity, I didn't make my token divisible, but you can make them divisible by adding the state variable `decimals: uint256` which stores how decimal values are you using. Of course, in order to make it work properly, you have to multiply the whole number of tokens by $10^{decimals}$
+- for the sake of simplicity, I didn't make my token divisible, but you can make them divisible by adding the state variable `decimals: uint256` which stores how decimal values are you using. Of course, to make it work properly, you have to multiply the whole number of tokens by $10^{decimals}$
 - together with the method of `mint` the token you can add a function that can `burn` token reducing the total supply, making them more scarce.
 
 # References
